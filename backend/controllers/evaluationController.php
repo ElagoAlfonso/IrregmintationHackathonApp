@@ -27,9 +27,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $score2      = intval($_POST['score2']       ?? 0);
     $score3      = intval($_POST['score3']       ?? 0);
     $comments    = trim($_POST['comments']       ?? '');
+    $redirectKey = trim($_POST['redirect']      ?? '');
+
+    $redirectMap = [
+        'student' => '../../frontend/views/student/student_form.php',
+        'program_head' => '../../frontend/views/program_head/program_head_form.php',
+        'dean' => '../../frontend/views/dean/dean_form.php'
+    ];
+    $redirectUrl = $redirectMap[$redirectKey] ?? '../../frontend/public/index.php';
 
     if (!preg_match('/^\d{4}-\d{2}-\d{5}$/', $facultyCode)) {
-        header("Location: ../../frontend/public/index.php");
+        header("Location: $redirectUrl?error=invalid_faculty");
         exit;
     }
 
@@ -37,7 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($facultyId) || $score1 < 1 || $score1 > 5 ||
         $score2 < 1 || $score2 > 5 || $score3 < 1 || $score3 > 5 || $college === '') {
-        header("Location: ../../frontend/public/index.php");
+        header("Location: $redirectUrl?error=invalid_data");
+        exit;
+    }
+
+    if ($comments === '') {
+        header("Location: $redirectUrl?error=comment_required");
         exit;
     }
 
@@ -49,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $checkStmt->execute();
         $checkStmt->store_result();
         if ($checkStmt->num_rows === 0) {
-            header("Location: ../../frontend/public/index.php?error=invalid_faculty");
+            header("Location: $redirectUrl?error=invalid_faculty");
             exit;
         }
         $checkStmt->close();
@@ -63,10 +76,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $selfCheckStmt->execute();
         $selfCheckStmt->store_result();
         if ($selfCheckStmt->num_rows > 0) {
-            header("Location: ../../frontend/public/index.php?error=self_evaluation");
+            header("Location: $redirectUrl?error=self_evaluation");
             exit;
         }
         $selfCheckStmt->close();
+    }
+
+    // Prevent duplicate evaluations by the same role
+    $duplicateStmt = $conn->prepare("SELECT id FROM evaluations WHERE faculty_id = ? AND rater_role = ? LIMIT 1");
+    if ($duplicateStmt) {
+        $raterRole = $_SESSION['role'];
+        $duplicateStmt->bind_param('ss', $facultyId, $raterRole);
+        $duplicateStmt->execute();
+        $duplicateStmt->store_result();
+        if ($duplicateStmt->num_rows > 0) {
+            header("Location: $redirectUrl?error=duplicate");
+            exit;
+        }
+        $duplicateStmt->close();
     }
 
     $stmt = $conn->prepare(
@@ -85,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
     }
 
-    header("Location: ../../frontend/public/index.php");
+    header("Location: $redirectUrl?success=1");
     exit;
 }
 

@@ -5,6 +5,8 @@ A web-based application for managing faculty evaluations in an academic institut
 ## Features
 
 - **Role-based Access**: Different interfaces for students, program heads, deans, and administrators
+- **Evaluation Roles**: Only students, program heads, and deans can evaluate faculty members
+- **Program Head Interface**: Program heads have a dedicated interface to evaluate professors and manage program-level evaluations
 - **Evaluation Forms**: Structured forms for collecting feedback on faculty performance
 - **User Management**: Registration, login, and user role management
 - **Database Integration**: MySQL database for storing users, evaluations, and audit logs
@@ -49,7 +51,7 @@ A web-based application for managing faculty evaluations in an academic institut
 After seeding users, you can log in with:
 - **Admin**: admin@test.com / admin123
 - **Student**: student@test.com / student123
-- **Professor**: professor@test.com / prof123
+- **Program Head**: program_head@test.com / ph123
 
 ## Project Structure
 
@@ -75,9 +77,11 @@ hackathon/
 
 1. **Login** with appropriate credentials based on your role
 2. **Students** can submit evaluations for faculty members
-3. **Program Heads** can review and manage evaluations for their programs
-4. **Deans** can oversee evaluations across departments
+3. **Program Heads** can evaluate professors using the dedicated program head interface and manage evaluations for their program
+4. **Deans** can evaluate faculty and oversee evaluations across departments
 5. **Administrators** have full access to manage users, view reports, and system settings
+
+- Evaluations require comments and show a success confirmation after submission.
 
 ## Contributing
 

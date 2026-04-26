@@ -60,6 +60,7 @@ ob_start();
         <button class="ai-clear-btn" id="clearBtn" onclick="clearSearch()">✕ Clear</button>
     </div>
     <div class="ai-status" id="aiStatus">Type a query and click Ask AI, or use the quick filters below</div>
+    <div id="aiResultList" class="ai-result-list" style="display:none; margin-top:12px; font-size:14px;"></div>
     <div class="ai-pills">
         <button class="ai-pill" onclick="quickSearch('faculty in Department of Computer Studies')">Computer Studies</button>
         <button class="ai-pill" onclick="quickSearch('faculty in Department of Business Administration')">Business Admin</button>
@@ -157,30 +158,32 @@ async function runAiSearch() {
     statusEl.className = 'ai-status thinking';
     statusEl.innerHTML = '<span class="dot-loader"><span></span><span></span><span></span></span> Reading your query…';
 
-    const summary = FACULTY_DATA.map(f =>
-        `ID:${f.faculty_id} | Name:${f.name} | Dept:${f.college} | Score:${f.final_score.toFixed(2)} | Evals:${f.eval_count}`
-    ).join('\n');
-
-    const prompt = `You are a filter assistant. Return ONLY a JSON array of matching faculty_id values — no explanation, no markdown.\n\nFaculty:\n${summary}\n\nQuery: "${query}"\n\nRules: match by name, department, score, or evals. "high scores"=score>=3.5, "low scores"=score<2.5, "most evaluated"=evals>=3. Return [] if none. ONLY JSON array.`;
-
     try {
-        const res  = await fetch('https://api.anthropic.com/v1/messages', {
+        const res = await fetch('../../../backend/controllers/aiSearchController.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, messages: [{ role: 'user', content: prompt }] })
+            body: JSON.stringify({ query: query, facultyData: FACULTY_DATA })
         });
+        
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        
         const data = await res.json();
-        const raw  = (data.content?.[0]?.text || '').trim();
-        const m    = raw.match(/\[.*\]/s);
-        if (!m) throw new Error('No array');
-        const ids  = JSON.parse(m[0]);
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        const ids = (data.ids || []).map(id => String(id));
         applyFilter(ids, query);
-        document.getElementById('clearBtn').style.display = '';
+        document.getElementById('clearBtn').style.display = ''; 
         statusEl.className = ids.length === 0 ? 'ai-status error' : 'ai-status found';
         statusEl.textContent = ids.length === 0
             ? `No faculty matched "${query}"`
             : `✓ ${ids.length} result${ids.length !== 1 ? 's' : ''} for "${query}"`;
     } catch(e) {
+        console.error('AI Search Error:', e);
         statusEl.className = 'ai-status error';
         statusEl.textContent = '⚠ AI search failed — try again or use the quick filters.';
     }
@@ -192,21 +195,53 @@ function applyFilter(ids, query) {
     const cards = document.querySelectorAll('.faculty-card');
     const noRes = document.getElementById('noResults');
     const counter = document.getElementById('visibleCount');
+    const aiResultList = document.getElementById('aiResultList');
+
     if (ids.length === 0) {
         cards.forEach(c => { c.classList.add('ai-dimmed'); c.classList.remove('ai-highlight'); });
         noRes.style.display = '';
         counter.textContent = '0 results';
+        aiResultList.style.display = 'none';
+        aiResultList.innerHTML = '';
         return;
     }
     noRes.style.display = 'none';
-    let visible = 0;
+
+    const facultyGrid = document.getElementById('facultyGrid');
+    const matchedCards = [];
+    const unmatchedCards = [];
+
     cards.forEach(card => {
-        const match = ids.includes(card.getAttribute('data-id'));
-        card.classList.toggle('ai-highlight', match);
-        card.classList.toggle('ai-dimmed', !match);
-        if (match) visible++;
+        const isMatch = ids.includes(card.getAttribute('data-id'));
+        card.classList.toggle('ai-highlight', isMatch);
+        card.classList.toggle('ai-dimmed', !isMatch);
+        if (isMatch) matchedCards.push(card);
+        else unmatchedCards.push(card);
     });
-    counter.textContent = `${visible} result${visible !== 1 ? 's' : ''}`;
+
+    const sortedMatched = matchedCards.slice().sort((a, b) => {
+        const aName = a.querySelector('.fc-name')?.textContent.trim().toLowerCase() || '';
+        const bName = b.querySelector('.fc-name')?.textContent.trim().toLowerCase() || '';
+        return aName.localeCompare(bName, undefined, { sensitivity: 'base' });
+    });
+
+    sortedMatched.forEach(card => facultyGrid.appendChild(card));
+    unmatchedCards.forEach(card => facultyGrid.appendChild(card));
+
+    const selectedNames = sortedMatched.map(card => card.querySelector('.fc-name')?.textContent.trim()).filter(Boolean);
+    aiResultList.innerHTML = '<strong>Selected faculty:</strong>';
+    const list = document.createElement('ul');
+    list.style.margin = '8px 0 0';
+    list.style.paddingLeft = '20px';
+    selectedNames.forEach(name => {
+        const item = document.createElement('li');
+        item.textContent = name;
+        list.appendChild(item);
+    });
+    aiResultList.appendChild(list);
+    aiResultList.style.display = 'block';
+
+    counter.textContent = `${selectedNames.length} result${selectedNames.length !== 1 ? 's' : ''}`;
 }
 
 function clearSearch() {
@@ -218,6 +253,9 @@ function clearSearch() {
     document.getElementById('visibleCount').textContent = `${FACULTY_DATA.length} members`;
     document.querySelectorAll('.faculty-card').forEach(c => c.classList.remove('ai-dimmed','ai-highlight'));
     document.getElementById('noResults').style.display = 'none';
+    const aiResultList = document.getElementById('aiResultList');
+    aiResultList.style.display = 'none';
+    aiResultList.innerHTML = '';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

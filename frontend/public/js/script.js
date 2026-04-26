@@ -21,7 +21,7 @@ function getFieldValue(field) {
 }
 
 function calculateFormProgress(form) {
-    const fields = Array.from(form.querySelectorAll('input, select, textarea')).filter(f => f.required);
+    const fields = Array.from(form.querySelectorAll('input, select, textarea')).filter(f => f.required && !f.disabled);
     if (!fields.length) return 0;
     const filled = fields.reduce((n, f) => n + (getFieldValue(f).toString().trim() !== '' ? 1 : 0), 0);
     return Math.round((filled / fields.length) * 100);
@@ -243,6 +243,7 @@ function setupConfirmSubmits() {
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', function(e) {
             updateProgressUI(form);
+            if (!form.reportValidity()) { e.preventDefault(); return; }
             const idInput = form.querySelector('input[name="faculty_code"]');
             const errEl   = document.getElementById('faculty_code_error');
             if (idInput && !validateFacultyId(idInput, errEl)) { e.preventDefault(); return; }

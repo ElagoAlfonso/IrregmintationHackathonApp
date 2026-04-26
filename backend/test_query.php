@@ -6,7 +6,7 @@ $query = "
     SELECT f.faculty_id, f.name, f.college 
     FROM faculty f
     LEFT JOIN users u ON f.user_id = u.id
-    WHERE f.role = 'professor' AND (u.role = 'professor' OR u.id IS NULL)
+    WHERE f.role = 'professor' AND u.id IS NOT NULL AND u.role = 'professor'
     ORDER BY f.name ASC
 ";
 echo "Query: " . str_replace("\n", " ", $query) . "\n\n";

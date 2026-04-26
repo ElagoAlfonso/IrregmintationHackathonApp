@@ -26,6 +26,24 @@ ob_start();
 
 <div class="page-title">Student Evaluation Form</div>
 <div class="page-subtitle">Rate your faculty members to help improve teaching quality</div>
+<?php
+$successMsg = isset($_GET['success']) ? 'Evaluation submitted successfully. Thank you for your feedback.' : '';
+$errorMsg = '';
+if (isset($_GET['error'])) {
+    if ($_GET['error'] === 'comment_required') {
+        $errorMsg = 'Please add a comment before submitting the evaluation.';
+    } elseif ($_GET['error'] === 'duplicate') {
+        $errorMsg = 'You have already evaluated this faculty member.';
+    } elseif ($_GET['error'] === 'invalid_data') {
+        $errorMsg = 'Form submission failed. Please check all fields and try again.';
+    }
+}
+?>
+<?php if ($successMsg): ?>
+<div class="alert alert-success"><?php echo htmlspecialchars($successMsg); ?></div>
+<?php elseif ($errorMsg): ?>
+<div class="alert alert-error"><?php echo htmlspecialchars($errorMsg); ?></div>
+<?php endif; ?>
 
 <div class="progress-banner">
     <div class="progress-banner-top">
@@ -64,15 +82,31 @@ ob_start();
                             SELECT f.faculty_id, f.name, f.college 
                             FROM faculty f
                             LEFT JOIN users u ON f.user_id = u.id
-                            WHERE f.role = 'professor' AND (u.role = 'professor' OR u.id IS NULL)
+                            WHERE f.role = 'professor' AND u.id IS NOT NULL AND u.role = 'professor'
                             ORDER BY f.name ASC
                         ");
                         if ($facultyResult && $facultyResult->num_rows > 0) {
+                            $checkedRole = 'student';
+                            $evalCheckStmt = $conn->prepare("SELECT id FROM evaluations WHERE faculty_id = ? AND rater_role = ? LIMIT 1");
                             while ($row = $facultyResult->fetch_assoc()) {
                                 $facultyId    = htmlspecialchars($row['faculty_id']);
                                 $name         = htmlspecialchars($row['name']);
                                 $collegeValue = htmlspecialchars($row['college']);
-                                echo "<option value=\"$facultyId\" data-college=\"$collegeValue\">$name</option>";
+                                $alreadyEvaluated = false;
+
+                                if ($evalCheckStmt) {
+                                    $evalCheckStmt->bind_param('ss', $row['faculty_id'], $checkedRole);
+                                    $evalCheckStmt->execute();
+                                    $evalResult = $evalCheckStmt->get_result();
+                                    $alreadyEvaluated = $evalResult && $evalResult->num_rows > 0;
+                                }
+
+                                $label = $name . ($alreadyEvaluated ? ' (already evaluated)' : '');
+                                $disabled = $alreadyEvaluated ? ' disabled' : '';
+                                echo "<option value=\"$facultyId\" data-college=\"$collegeValue\"$disabled>$label</option>";
+                            }
+                            if ($evalCheckStmt) {
+                                $evalCheckStmt->close();
                             }
                         } else {
                             echo "<option value=\"\" disabled>No professors available</option>";
@@ -124,11 +158,12 @@ ob_start();
         <h3>💬 Comments</h3>
         <div class="form-group">
             <label for="comments">Remarks</label>
-            <textarea id="comments" name="comments" rows="4"
-                      placeholder="Any additional observations or notes…"></textarea>
+            <textarea id="comments" name="comments" rows="4" required
+                      placeholder="Please add comments before submitting…"></textarea>
         </div>
     </div>
 
+    <input type="hidden" name="redirect" value="student">
     <div class="submit-row">
         <button class="btn btn-primary" type="submit">✓ Submit Evaluation</button>
     </div>
