@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════
+   FACULTY EVALUATION SYSTEM — forms.css
+   Student, Dean, Program Head eval forms
+   ═══════════════════════════════════════ */
+
+/* ── Progress Banner ── */
+.progress-banner {
+    background: var(--accent);
+    color: white;
+    border-radius: var(--r-lg);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+}
+
+.progress-banner-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.progress-banner-label { font-size: 14px; font-weight: 600; opacity: 0.9; }
+.progress-banner-pct   { font-size: 16px; font-weight: 700; }
+
+.progress-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: white;
+    border-radius: 10px;
+    width: 0%;
+    transition: width 0.35s ease;
+}
+
+/* ── Form Sections ── */
+.form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+/* ── Score Input Row ── */
+.score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.score-row input {
+    width: 72px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.score-hint {
+    font-size: 12.5px;
+    color: var(--text-3);
+    white-space: nowrap;
+}
+
+/* ── Autosave status ── */
+.autosave-status {
+    font-size: 12px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ── Submit Row ── */
+.submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 6px;
+}
+
+.submit-row .btn { min-width: 180px; justify-content: center; padding: 12px 24px; font-size: 15px; }

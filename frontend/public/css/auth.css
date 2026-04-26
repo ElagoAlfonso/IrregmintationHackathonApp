@@ -1,0 +1,205 @@
+/* ═══════════════════════════════════════
+   FACULTY EVALUATION SYSTEM — auth.css
+   Login and Register pages
+   ═══════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+    padding: 20px;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle grid texture */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(67,97,238,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(67,97,238,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+
+.auth-wrap {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 42px 38px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.auth-logo-icon {
+    width: 48px;
+    height: 48px;
+    background: #4361ee;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-logo-icon svg { width: 24px; height: 24px; }
+
+.auth-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+    margin-bottom: 5px;
+    letter-spacing: -0.2px;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: #94a3b8;
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.auth-error {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 11px 14px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    border-left: 3px solid #dc2626;
+    margin-bottom: 20px;
+}
+
+.auth-success {
+    background: #d1fae5;
+    color: #059669;
+    padding: 11px 14px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    border-left: 3px solid #059669;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e3e7f0;
+    border-radius: 10px;
+    font-size: 14.5px;
+    color: #0f172a;
+    background: #f7f8fc;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #4361ee;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(67,97,238,0.1);
+}
+
+.input-field::placeholder { color: #94a3b8; }
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+    margin-top: -4px;
+}
+
+.checkbox-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #4361ee;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checkbox-row label {
+    font-size: 13.5px;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    background: #4361ee;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+    letter-spacing: 0.2px;
+}
+
+.auth-btn:hover {
+    background: #2f4ac9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(67,97,238,0.35);
+}
+
+.auth-btn:active { transform: translateY(0); }
+
+.auth-footer {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 13.5px;
+    color: #94a3b8;
+}
+
+.auth-footer a {
+    color: #4361ee;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-footer a:hover { text-decoration: underline; }
+
+/* Role select */
+select.input-field {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    padding-right: 36px;
+}

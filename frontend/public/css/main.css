@@ -1,0 +1,334 @@
+/* ═══════════════════════════════════════
+   FACULTY EVALUATION SYSTEM — main.css
+   Shared layout, sidebar, topbar, tokens
+   ═══════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+    --sidebar-w: 252px;
+    --bg:        #f0f2f8;
+    --surface:   #ffffff;
+    --surface-2: #f7f8fc;
+    --border:    #e3e7f0;
+    --border-md: #cdd4e4;
+
+    --text-1:    #0f172a;
+    --text-2:    #475569;
+    --text-3:    #94a3b8;
+
+    --accent:       #4361ee;
+    --accent-dark:  #2f4ac9;
+    --accent-light: #eef0fd;
+
+    --green:        #059669;
+    --green-light:  #d1fae5;
+    --red:          #dc2626;
+    --red-light:    #fee2e2;
+    --amber:        #d97706;
+    --amber-light:  #fef3c7;
+
+    --sidebar-bg:      #0f172a;
+    --sidebar-text:    rgba(255,255,255,0.6);
+    --sidebar-active:  rgba(67,97,238,0.22);
+    --sidebar-hover:   rgba(255,255,255,0.07);
+
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 14px;
+    --r-xl: 20px;
+
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-1);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 14px 18px;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 16px;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.logo-icon svg { width: 18px; height: 18px; }
+
+.logo-title { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+.logo-sub   { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.4px; margin-top: 1px; }
+
+.nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.22);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 0 8px;
+    margin-bottom: 5px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    border-radius: var(--r-md);
+    text-decoration: none;
+    color: var(--sidebar-text);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-nav a .ni {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.05);
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.sidebar-nav a:hover        { background: var(--sidebar-hover); color: #fff; }
+.sidebar-nav a:hover .ni    { background: rgba(67,97,238,0.28); }
+.sidebar-nav a.active       { background: var(--sidebar-active); color: #fff; }
+.sidebar-nav a.active .ni   { background: var(--accent); }
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    border-radius: var(--r-md);
+    text-decoration: none;
+    color: rgba(255,255,255,0.38);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.logout-btn .ni {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.05);
+    font-size: 14px;
+}
+
+.logout-btn:hover { background: rgba(239,68,68,0.12); color: #fca5a5; }
+
+/* ── Main Wrapper ── */
+.main-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Topbar ── */
+.topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 13px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.topbar-path { font-size: 13px; color: var(--text-3); }
+.topbar-path strong { color: var(--text-1); font-weight: 600; }
+
+.role-pill {
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--accent-light);
+    color: var(--accent);
+    text-transform: capitalize;
+}
+
+/* ── Content Area ── */
+.main-content {
+    flex: 1;
+    padding: 30px 32px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* ── Shared Card ── */
+.card {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ── Page Header ── */
+.page-title   { font-size: 24px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; letter-spacing: -0.2px; }
+.page-subtitle { font-size: 14px; color: var(--text-3); margin-bottom: 28px; }
+
+/* ── Shared Form Elements ── */
+input, select, textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-1);
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 10px 13px;
+    width: 100%;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(67,97,238,0.1);
+}
+
+input::placeholder, textarea::placeholder { color: var(--text-3); }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+/* ── Shared Buttons ── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: var(--r-md);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-primary  { background: var(--accent); color: white; }
+.btn-primary:hover  { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(67,97,238,0.3); }
+
+.btn-ghost {
+    background: var(--surface-2);
+    color: var(--text-2);
+    border: 1.5px solid var(--border);
+}
+.btn-ghost:hover { background: var(--border); color: var(--text-1); }
+
+/* ── Badges ── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-blue   { background: var(--accent-light); color: var(--accent); }
+.badge-green  { background: var(--green-light);  color: var(--green); }
+.badge-amber  { background: var(--amber-light);  color: var(--amber); }
+.badge-red    { background: var(--red-light);    color: var(--red); }
+
+/* ── Field Errors ── */
+.field-error {
+    font-size: 12.5px;
+    color: var(--red);
+    display: none;
+}
+.field-error.show { display: block; }
+.input-error { border-color: var(--red) !important; box-shadow: 0 0 0 3px rgba(220,38,38,0.1) !important; }
+
+.faculty-id-input[readonly] {
+    background: var(--surface-2);
+    color: var(--text-2);
+    cursor: not-allowed;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
